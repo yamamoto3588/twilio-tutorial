@@ -3,7 +3,7 @@
 ## backend
 uses fast api.  
 ### set up  
-create `backend/twilio-credentials.json` like below and put your api keys.(DO NOT PUSH IT TO REMOTE REPOSITORY.)
+create `backend/twilio-credentials.json` like below and put your api keys.(DO NOT PUSH IT TO REMOTE REPOSITORY.)  
 you can obtain api keys from [https://jp.twilio.com/try-twilio](https://jp.twilio.com/try-twilio)  
 ```json:backend/twilio-credentials.json
 {
