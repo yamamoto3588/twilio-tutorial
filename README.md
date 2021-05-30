@@ -3,8 +3,8 @@
 ## backend
 uses fast api.  
 ### set up  
-put your api keys in `twilio-credentials.json` in backend directory like below.(DO NOT PUSH IT TO REMOTE REPOSITORY.)
-```
+create `backend/twilio-credentials.json` like below and put your api keys.(DO NOT PUSH IT TO REMOTE REPOSITORY.)
+```json:backend/twilio-credentials.json
 {
     "ACCOUNT_SID": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     "API_KEY_SID": "SKXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
