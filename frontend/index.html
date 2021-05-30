@@ -1,0 +1,23 @@
+<head>
+    <script src="https://sdk.twilio.com/js/video/releases/2.8.0/twilio-video.min.js"></script>
+    <script src="routine.js"></script>
+</head>
+<body>
+    <div>
+        <p id="show-room-name"></p>
+        <p id="show-room-token"></p>
+    </div>
+    <div id="start-menu">
+        <div>
+            <input id="room-name" type="text" placeholder="room name">
+            <input id="identity" type="text" placeholder="identity">
+            <input id="join-button" type="button" value="join room">
+        </div>
+    </div>
+    <div id="local-video-container">
+        <p>You</p>
+    </div>
+    <div id="remote-video-container">
+        <p>Remote participants</p>
+    </div>
+</body>
