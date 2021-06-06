@@ -4,6 +4,8 @@ window.addEventListener("DOMContentLoaded",()=>{
     const apiServerURL="http://localhost:8001/";
     const videoWidth=640;
     const videoHeight=480;
+    const focusWidth=200;
+    const focusHeight=200;
 
     // functions
     function removeStartMenu(){
@@ -101,8 +103,42 @@ window.addEventListener("DOMContentLoaded",()=>{
         function expandRegion(segmentation,typeIds){
 
         }
+        function index2xy(index,segmentation){
+            if(index===-1) return {x: -1,y: -1};
+            // 0000000000
+            // 0000000000
+            // 0010000000
+            // 0000000000
+            return {x:index%segmentation.width,y: Math.floor(index/segmentation.height)};
+        }
+        function xy2index(x,y,segmentation){
+            return x+y*segmentation.width;
+        }
         function createFocusRegion(segmentation,typeId,width,height,offsetX,offsetY){
+            const srcIndex=segmentation.data.findIndex(pixel=>pixel==typeId);
+            const srcPoint=index2xy(srcIndex,segmentation);
             console.log(segmentation);
+            const findRegion=srcPoint.x!==-1&&srcPoint.y!==-1;
+
+            const res={
+                x: srcPoint.x+offsetX,
+                y: srcPoint.y+offsetY,
+                width: width,
+                height: height,
+                findRegion: findRegion
+            };
+
+            if(findRegion){
+                for(let probeY=res.y;probeY<res.y+height;probeY++){
+                    for(let probeX=res.x;probeX<res.x+width;probeX++){
+    //                    if(probeX>=width) break;
+                        segmentation.data[xy2index(probeX,probeY,segmentation)]=typeId;
+                    }
+    //                if(probeY>=height) break;
+                }    
+            }
+
+            return res;
         }
         // 画像をマスクする
         const rainbow = [
@@ -122,7 +158,7 @@ window.addEventListener("DOMContentLoaded",()=>{
             // マスクを使って描画
             const opacity = 0.5;
             const flipHorizontal = false;
-            const maskBlurAmount = 0;
+            const maskBlurAmount = 0.5;
             bodyPix.drawMask(
                 canvas, img, colorPartImage, opacity, maskBlurAmount,
                 flipHorizontal);
@@ -151,8 +187,9 @@ window.addEventListener("DOMContentLoaded",()=>{
                     segmentationThreshold: 0.7
                 });
 
-                createFocusRegion(segmentation,[10]);
+                const focusRegionInfo=createFocusRegion(segmentation,10,focusWidth,focusHeight,-200,0);
                 maskCanvas(localCanvasRes,localCanvasSrc,segmentation);
+                localCtxRes.strokeRect(focusRegionInfo.x,focusRegionInfo.y,focusWidth,focusHeight)
 
                 looping=false;
             }
