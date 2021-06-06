@@ -1,4 +1,5 @@
 window.addEventListener("DOMContentLoaded",()=>{
+    "use strict";
     // constants
     const apiServerURL="http://localhost:8001/";
     const videoWidth=640;
@@ -96,19 +97,34 @@ window.addEventListener("DOMContentLoaded",()=>{
             quantBytes: 2
         });
         console.log("Complete",net);
+        // functions for body detection
+        function expandRegion(segmentation,typeIds){
+
+        }
+        function createFocusRegion(segmentation,typeId,width,height,offsetX,offsetY){
+            console.log(segmentation);
+        }
         // 画像をマスクする
+        const rainbow = [
+            [110, 64, 170], [143, 61, 178], [178, 60, 178], [210, 62, 167],
+            [238, 67, 149], [255, 78, 125], [255, 94, 99],  [255, 115, 75],
+            [255, 140, 56], [239, 167, 47], [217, 194, 49], [194, 219, 64],
+            [175, 240, 91], [135, 245, 87], [96, 247, 96],  [64, 243, 115],
+            [40, 234, 141], [28, 219, 169], [26, 199, 194], [33, 176, 213],
+            [47, 150, 224], [65, 125, 224], [84, 101, 214], [99, 81, 195]
+          ];
         function maskCanvas(canvas, img, segmentation) {
-            // マスクを作成
-            const fgColor = { r: 255, g: 0, b: 0, a: 128 };  // 人物は赤、半透明
             const bgColor = { r: 0, g: 0, b: 0, a: 0 }; // 背景は透明（色は黒だが無関係）
-            const colorMask = bodyPix.toMask(segmentation, fgColor, bgColor);
+            const colorMask = bodyPix.toMask(segmentation, rainbow, bgColor);
+            const colorPartImage=bodyPix.toColoredPartMask(segmentation,rainbow);
+              
 
             // マスクを使って描画
-            const opacity = 1.0;
+            const opacity = 0.5;
             const flipHorizontal = false;
             const maskBlurAmount = 0;
             bodyPix.drawMask(
-                canvas, img, colorMask, opacity, maskBlurAmount,
+                canvas, img, colorPartImage, opacity, maskBlurAmount,
                 flipHorizontal);
         }
         
@@ -135,6 +151,7 @@ window.addEventListener("DOMContentLoaded",()=>{
                     segmentationThreshold: 0.7
                 });
 
+                createFocusRegion(segmentation,[10]);
                 maskCanvas(localCanvasRes,localCanvasSrc,segmentation);
 
                 looping=false;
