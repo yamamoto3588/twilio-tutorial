@@ -150,18 +150,24 @@ window.addEventListener("DOMContentLoaded",()=>{
             [47, 150, 224], [65, 125, 224], [84, 101, 214], [99, 81, 195]
           ];
         function maskCanvas(canvas, img, segmentation) {
-            const bgColor = { r: 0, g: 0, b: 0, a: 0 }; // 背景は透明（色は黒だが無関係）
-            const colorMask = bodyPix.toMask(segmentation, rainbow, bgColor);
+            const fgColor = { r: 0, g: 0, b: 0, a: 0};
+            const bgColor = { r: 0, g: 0, b: 0, a: 255 }; // 背景は透明（色は黒だが無関係）
+            const colorMask = bodyPix.toMask(segmentation, fgColor, bgColor);
             const colorPartImage=bodyPix.toColoredPartMask(segmentation,rainbow);
               
 
             // マスクを使って描画
-            const opacity = 0.5;
+            const opacity = 0.8;
             const flipHorizontal = false;
-            const maskBlurAmount = 0.5;
+            const maskBlurAmount = 10;
             bodyPix.drawMask(
-                canvas, img, colorPartImage, opacity, maskBlurAmount,
+                canvas, img, colorMask, opacity, maskBlurAmount,
                 flipHorizontal);
+        }
+        function overrideBinarySegmentation(segmentation){
+            for(let i=0;i<segmentation.data.length;i++){
+                if(segmentation.data[i]!==-1) segmentation.data[i]=1;
+            }
         }
         
 
@@ -170,6 +176,7 @@ window.addEventListener("DOMContentLoaded",()=>{
         const localCtxSrc=localCanvasSrc.getContext("2d");
         const localCanvasRes=document.createElement("canvas")
         const localCtxRes=localCanvasRes.getContext("2d");
+        const localStream=localCanvasRes.captureStream(16);
         document.body.appendChild(localCanvasRes);
         localCanvasSrc.width=videoWidth;
         localCanvasSrc.height=videoHeight;
@@ -188,7 +195,9 @@ window.addEventListener("DOMContentLoaded",()=>{
                 });
 
                 const focusRegionInfo=createFocusRegion(segmentation,10,focusWidth,focusHeight,-200,0);
+                overrideBinarySegmentation(segmentation);
                 maskCanvas(localCanvasRes,localCanvasSrc,segmentation);
+                localCtxRes.strokeStyle="rgb(255,0,0)";
                 localCtxRes.strokeRect(focusRegionInfo.x,focusRegionInfo.y,focusWidth,focusHeight)
 
                 looping=false;
