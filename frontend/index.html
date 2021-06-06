@@ -1,6 +1,7 @@
 <head>
     <script src="https://sdk.twilio.com/js/video/releases/2.8.0/twilio-video.min.js"></script>
-    <script src="routine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>    <script src="routine.js"></script>
 </head>
 <body>
     <div>
@@ -9,8 +10,8 @@
     </div>
     <div id="start-menu">
         <div>
-            <input id="room-name" type="text" placeholder="room name">
-            <input id="identity" type="text" placeholder="identity">
+            <input id="room-name" type="text" placeholder="room name" value="default-room">
+            <input id="identity" type="text" placeholder="identity" value="1">
             <input id="join-button" type="button" value="join room">
         </div>
     </div>
